@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supermercado Ana Risorlange | Gestão de Cupons - Rede Parceria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandBlue: '#0f3289',
+                        brandBlueDark: '#0a2366',
+                        brandOrange: '#f26522',
+                        brandOrangeHover: '#d95314',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-100 font-sans min-h-screen text-slate-800 pb-16">
+
+    <!-- Header Principal -->
+    <header class="bg-brandBlue text-white shadow-xl border-b-4 border-brandOrange">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-white p-2.5 rounded-2xl shadow-md flex items-center justify-center border border-white/20">
+                    <svg class="w-10 h-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 25H25L35 70H80L90 35H30" stroke="#0f3289" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="40" cy="82" r="7" fill="#0f3289"/>
+                        <circle cx="75" cy="82" r="7" fill="#0f3289"/>
+                        <path d="M50 20L55 32L68 33L58 42L61 55L50 48L39 55L42 42L32 33L45 32L50 20Z" fill="#f26522" stroke="#f26522" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-brandOrange text-white text-[10px] font-black uppercase px-2 py-0.5 rounded-full">Rede Parceria</span>
+                        <span class="text-xs text-blue-200">Gestão Oficial de Cupons</span>
+                    </div>
+                    <h1 class="text-2xl font-black tracking-tight text-white leading-tight">Supermercado Ana Risorlange</h1>
+                    <p class="text-xs text-blue-100 italic">"Trazendo o melhor para você" • Gestor Oficial de Cupons</p>
+                </div>
+            </div>
+            
+            <div class="bg-brandBlueDark px-4 py-2.5 rounded-xl border border-blue-400/30 flex items-center gap-3 shadow-inner">
+                <div class="text-right">
+                    <p class="text-[10px] text-blue-200 uppercase font-bold tracking-wider">Regra Oficial do Cupom</p>
+                    <p class="text-sm font-black text-brandOrange">R$ 100,00 = 1 Cupom</p>
+                </div>
+                <div class="bg-brandOrange/20 text-brandOrange p-2 rounded-lg">
+                    <i class="fa-solid fa-certificate text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 mt-6 space-y-6">
+
+        <!-- Métricas Rápidas (Topo) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Gasto Acumulado</p>
+                    <p id="dashTotalGasto" class="text-3xl font-black text-brandBlue">R$ 0,00</p>
+                    <p id="dashNotasCount" class="text-xs text-slate-400 mt-1">0 notas registradas</p>
+                </div>
+                <div class="w-12 h-12 bg-blue-50 text-brandBlue rounded-xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between border-l-4 border-l-brandOrange">
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total de Cupons Gerados</p>
+                    <div class="flex items-baseline gap-2">
+                        <p id="dashCuponsTotal" class="text-3xl font-black text-brandOrange">0</p>
+                        <span class="text-xs font-bold text-slate-500">cupons da sorte</span>
+                    </div>
+                    <div class="flex gap-2 text-[11px] mt-1 font-semibold">
+                        <span id="dashNaUrnaCount" class="text-emerald-600"><i class="fa-solid fa-check"></i> 0 Na Urna</span>
+                        <span id="dashPendentesCount" class="text-amber-600"><i class="fa-solid fa-clock"></i> 0 Pendentes</span>
+                    </div>
+                </div>
+                <div class="w-12 h-12 bg-orange-50 text-brandOrange rounded-xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-ticket"></i>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Saldo Pendente Acumulado</p>
+                    <p id="dashSaldoPendente" class="text-3xl font-black text-emerald-600">R$ 0,00</p>
+                    <p id="dashFaltaTexto" class="text-xs text-slate-500 mt-1 font-medium">Faltam R$ 100,00 p/ +1 cupom</p>
+                </div>
+                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegação por Abas -->
+        <div class="flex bg-slate-200/80 p-1.5 rounded-2xl gap-1">
+            <button onclick="switchTab('caixa')" id="btnTabCaixa" class="tab-btn flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-brandBlue text-white shadow-md">
+                <i class="fa-solid fa-calculator"></i> Alerta do Caixa <span class="bg-brandOrange text-[10px] px-2 py-0.5 rounded-full uppercase">Simulador</span>
+            </button>
+            <button onclick="switchTab('registrar')" id="btnTabRegistrar" class="tab-btn flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:text-brandBlue">
+                <i class="fa-solid fa-file-circle-plus"></i> Registrar Nota
+            </button>
+            <button onclick="switchTab('historico')" id="btnTabHistorico" class="tab-btn flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:text-brandBlue">
+                <i class="fa-solid fa-box-archive"></i> Urna e Histórico <span id="badgePendentesAba" class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full">0 pend.</span>
+            </button>
+        </div>
+
+        <!-- ABA 1: SIMULADOR DO CAIXA -->
+        <div id="tabCaixa" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="bg-amber-100 text-amber-700 p-3 rounded-xl">
+                        <i class="fa-solid fa-calculator text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-brandBlue">Simulador do Caixa (100% Integrado ao Seu Saldo Real)</h2>
+                        <p class="text-xs text-slate-500">Digite o valor atual das suas compras. O simulador puxa automaticamente o seu Saldo Pendente Salvo e indica qual produto pegar na Patreleira!</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Digite o Valor Atual das Compras (R$)</label>
+                            <input type="number" step="0.01" id="inputValorCaixa" oninput="calcularCaixaSimulador()" placeholder="R$ 0,00" class="w-full p-4 border border-slate-300 rounded-xl font-black text-2xl text-brandBlue focus:ring-2 focus:ring-brandOrange outline-none">
+                            
+                            <!-- Atalhos Rápidos -->
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <button onclick="addValorCaixa(10)" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-xs font-bold rounded-lg text-slate-600">+R$10</button>
+                                <button onclick="addValorCaixa(20)" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-xs font-bold rounded-lg text-slate-600">+R$20</button>
+                                <button onclick="addValorCaixa(50)" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-xs font-bold rounded-lg text-slate-600">+R$50</button>
+                                <button onclick="addValorCaixa(90)" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-xs font-bold rounded-lg text-slate-600">+R$90</button>
+                                <button onclick="addValorCaixa(100)" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-xs font-bold rounded-lg text-slate-600">+R$100</button>
+                                <button onclick="zerarCaixa()" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-xs font-bold rounded-lg text-red-600 ml-auto">Zerar</button>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-600 uppercase">Saldo Pendente REAL das Compras Anteriores:</span>
+                            <span id="caixaSaldoRealTexto" class="text-sm font-black text-emerald-600">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <!-- Card de Resultado -->
+                    <div class="bg-brandBlue text-white p-6 rounded-2xl flex flex-col justify-between space-y-4">
+                        <div>
+                            <span class="text-[10px] font-bold text-blue-200 uppercase tracking-widest block mb-1">Cálculo Exato para o Próximo Cupom</span>
+                            <p id="caixaTituloResultado" class="text-sm font-medium text-blue-100">Digite o valor da compra ao lado para calcular quanto falta</p>
+                        </div>
+
+                        <div class="space-y-2 border-t border-blue-400/30 pt-3">
+                            <div class="flex justify-between text-xs text-blue-200">
+                                <span>Saldo que sobra p/ próxima compra:</span>
+                                <span id="caixaSobraProxima" class="font-bold text-white">R$ 0,00 / R$ 100,00</span>
+                            </div>
+                            <div class="w-full bg-blue-950 rounded-full h-2 overflow-hidden">
+                                <div id="barProgressoCaixa" class="bg-brandOrange h-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/10 p-4 rounded-xl flex items-center justify-between border border-white/10">
+                            <div>
+                                <p class="text-[10px] text-blue-200 font-bold uppercase">Cupons Gerados Nesta Compra</p>
+                                <p id="caixaCuponsGanhos" class="text-3xl font-black text-brandOrange">+0</p>
+                            </div>
+                            <i class="fa-solid fa-ticket text-3xl text-brandOrange opacity-80"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gôndola de Produtos Reais -->
+                <div class="border-t border-slate-200 pt-6 space-y-4">
+                    <div>
+                        <h3 class="text-base font-bold text-brandBlue">Prateleira de Produtos para Completar Cupom</h3>
+                        <p class="text-xs text-slate-500">Clique em qualquer produto real abaixo para somar à compra atual e ver quantos reais/centavos ele completa!</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="gondolaProdutos">
+                        <!-- Gerado via JavaScript com imagens reais -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 2: REGISTRAR NOTA -->
+        <div id="tabRegistrar" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-blue-100 text-brandBlue p-3 rounded-xl">
+                            <i class="fa-solid fa-receipt text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-brandBlue">Registrar Nova Nota Fiscal</h2>
+                            <p class="text-xs text-slate-500">Cadastre sua compra e faça upload da foto real da nota fiscal para salvar no histórico local.</p>
+                        </div>
+                    </div>
+
+                    <form onsubmit="salvarNotaReal(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Data da Compra *</label>
+                                <input type="date" id="inputDataNota" required class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brandBlue outline-none font-semibold">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nº da Nota Fiscal / COO (Opcional)</label>
+                                <input type="text" id="inputCooNota" placeholder="Ex: 848291" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brandBlue outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nome do Comprador *</label>
+                            <input type="text" id="inputCompradorNota" required placeholder="Digite o nome de quem realizou a compra" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brandBlue outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Valor Total da Nota Fiscal (R$) *</label>
+                            <input type="number" step="0.01" id="inputValorNota" oninput="previewCalculoNota()" required placeholder="R$ 0,00" class="w-full p-4 border border-slate-300 rounded-xl font-black text-2xl text-brandBlue focus:ring-2 focus:ring-brandOrange outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Observação da Compra (Opcional)</label>
+                            <input type="text" id="inputObsNota" placeholder="Ex: Feira do mês, Açougue e Padaria..." class="w-full p-3 border border-slate-300 rounded-xl outline-none text-sm">
+                        </div>
+
+                        <!-- Upload de Imagem Real -->
+                        <div class="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:bg-slate-50 transition cursor-pointer" onclick="document.getElementById('fileFotoNota').click()">
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-brandOrange mb-2"></i>
+                            <p class="text-sm font-bold text-slate-700">Clique aqui para enviar ou tirar foto da Nota Fiscal</p>
+                            <p class="text-xs text-slate-400 mt-1">Suporta fotos da câmera do celular ou galeria (JPG, PNG). A imagem fica salva localmente no seu aparelho.</p>
+                            <input type="file" id="fileFotoNota" accept="image/*" class="hidden" onchange="carregarFotoPreview(this)">
+                            <button type="button" class="mt-3 px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs font-bold text-slate-700">Selecionar Foto da Nota Fiscal</button>
+                        </div>
+
+                        <!-- Status da Urna -->
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-slate-600 uppercase">Situação Atual dos Cupons desta Nota</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="border-2 border-slate-200 p-3 rounded-xl flex items-center gap-3 cursor-pointer hover:bg-slate-50">
+                                    <input type="radio" name="statusUrna" value="pendente" checked class="accent-brandOrange w-4 h-4">
+                                    <div>
+                                        <p class="text-xs font-bold text-amber-700"><i class="fa-solid fa-clock"></i> Pendente (Em Mãos)</p>
+                                        <p class="text-[10px] text-slate-400">Ainda vou preencher e depositar na urna</p>
+                                    </div>
+                                </label>
+                                <label class="border-2 border-slate-200 p-3 rounded-xl flex items-center gap-3 cursor-pointer hover:bg-slate-50">
+                                    <input type="radio" name="statusUrna" value="urna" class="accent-emerald-600 w-4 h-4">
+                                    <div>
+                                        <p class="text-xs font-bold text-emerald-700"><i class="fa-solid fa-check"></i> Já Depositado Na Urna</p>
+                                        <p class="text-[10px] text-slate-400">Cupons já estão concorrendo no mercado</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-brandOrange hover:bg-brandOrangeHover text-white py-4 rounded-xl font-bold text-base transition shadow-lg flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Salvar Nota no Histórico
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Painel Lateral de Pré-Visualização -->
+                <div class="space-y-4">
+                    <div class="bg-brandBlue text-white p-6 rounded-2xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-blue-400/30 pb-3">
+                            <span class="text-xs font-bold text-blue-200 uppercase">Cálculo Automático da Nota</span>
+                            <span class="text-[10px] bg-blue-900 px-2 py-0.5 rounded text-blue-300">LocalStorage Salvo</span>
+                        </div>
+
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-blue-200">Valor digitado da nota:</span>
+                                <span id="prevValorDigitado" class="font-bold">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between text-emerald-400">
+                                <span>+ Saldo Pendente salvo:</span>
+                                <span id="prevSaldoSalvo" class="font-bold">+ R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between border-t border-blue-400/30 pt-2 font-black text-base">
+                                <span>Base somada p/ cupons:</span>
+                                <span id="prevBaseSomada" class="text-brandOrange">R$ 0,00</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <div class="bg-blue-950 p-3 rounded-xl text-center">
+                                <span class="text-[10px] text-blue-300 font-bold uppercase block">Cupons desta nota</span>
+                                <span id="prevCuponsGanhos" class="text-2xl font-black text-brandOrange">+0</span>
+                            </div>
+                            <div class="bg-blue-950 p-3 rounded-xl text-center">
+                                <span class="text-[10px] text-blue-300 font-bold uppercase block">Novo Saldo Pendente</span>
+                                <span id="prevNovoSaldo" class="text-lg font-black text-emerald-400">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pré-Visualização da Foto -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 text-center space-y-2">
+                        <span class="text-xs font-bold text-slate-500 uppercase block">Foto do Talão Fiscal Anexada</span>
+                        <div id="boxPreviewFoto" class="min-h-[160px] bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center overflow-hidden">
+                            <p class="text-xs text-slate-400 p-4">Nenhuma foto selecionada ainda.<br><span class="text-[10px]">Ao tirar foto no celular, a pré-visualização aparecerá aqui.</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 3: URNA E HISTÓRICO -->
+        <div id="tabHistorico" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-emerald-100 text-emerald-700 p-3 rounded-xl">
+                            <i class="fa-solid fa-box-archive text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-brandBlue">Histórico Pronto para Uso</h2>
+                            <p class="text-xs text-slate-500">Alterne o estado de cada nota entre "Pendente" e "Na Urna", visualize a foto real da Nota Fiscal ou zere os dados quando desejar.</p>
+                        </div>
+                    </div>
+
+                    <button onclick="limparTodosDados()" class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-xs font-bold transition flex items-center gap-2">
+                        <i class="fa-solid fa-trash-can"></i> Limpar / Zerar todos os dados
+                    </button>
+                </div>
+
+                <!-- Filtros -->
+                <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+                    <button onclick="filtrarHistorico('todos')" id="btnFiltroTodos" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brandBlue text-white">Todas as Notas (<span id="countFiltroTodos">0</span>)</button>
+                    <button onclick="filtrarHistorico('pendente')" id="btnFiltroPendente" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200">Pendentes (<span id="countFiltroPendente">0</span>)</button>
+                    <button onclick="filtrarHistorico('urna')" id="btnFiltroUrna" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200">Na Urna (<span id="countFiltroUrna">0</span>)</button>
+                </div>
+
+                <!-- Lista / Tabela -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-xs font-bold text-slate-400 uppercase bg-slate-50">
+                                <th class="py-3 px-4">Data & Nota Fiscal</th>
+                                <th class="py-3 px-4">Comprador</th>
+                                <th class="py-3 px-4">Valor da Nota</th>
+                                <th class="py-3 px-4 text-center">Cupons</th>
+                                <th class="py-3 px-4 text-center">Foto</th>
+                                <th class="py-3 px-4 text-center">Estado na Urna</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaHistoricoBody" class="divide-y divide-slate-100 text-sm">
+                            <!-- Inserido dinamicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal para Ver Foto do Talão -->
+    <div id="modalFoto" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl space-y-4 p-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-bold text-brandBlue text-base">Foto da Nota Fiscal</h3>
+                <button onclick="fecharModalFoto()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <div id="containerFotoModal" class="max-h-[70vh] overflow-auto flex items-center justify-center bg-slate-100 rounded-xl p-2">
+                <!-- Imagem inserida aqui -->
+            </div>
+            <button onclick="fecharModalFoto()" class="w-full py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl">Fechar Visualização</button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT COMPLETO E AUTÓNOMO -->
+    <script>
+        let appData = {
+            totalGasto: 0,
+            cuponsGerados: 0,
+            saldoPendente: 0,
+            historico: []
+        };
+
+        let fotoTempDataUrl = null;
+        let filtroAtual = 'todos';
+
+        // Produtos reais da gôndola do Ana Risorlange
+        const produtosGondola = [
+            { nome: 'Alho / Tempero', preco: 29.99, img: 'https://images.pexels.com/photos/32608237/pexels-photo-32608237.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=240&w=240' },
+            { nome: 'Molho de Tomate', preco: 2.49, img: 'https://images.pexels.com/photos/5379435/pexels-photo-5379435.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=240&w=240' },
+            { nome: 'Pão Francês', preco: 11.69, img: 'https://images.pexels.com/photos/34936588/pexels-photo-34936588.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=240&w=240' },
+            { nome: 'Detergente Líquido', preco: 2.49, img: 'https://images.pexels.com/photos/10574054/pexels-photo-10574054.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=240&w=240' },
+            { nome: 'Sabonete Hidratante', preco: 12.99, img: 'https://images.pexels.com/photos/6690197/pexels-photo-6690197.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=240&w=240' },
+            { nome: 'Macarrão Espaguete', preco: 3.49, img: 'https://images.pexels.com/photos/8108241/pexels-photo-8108241.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=240&w=240' },
+            { nome: 'Biscoito Cream Cracker', preco: 5.99, img: 'https://images.pexels.com/photos/37108654/pexels-photo-37108654.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=240&w=240' },
+            { nome: 'Leite Integral 1L', preco: 6.89, img: 'https://images.pexels.com/photos/20903577/pexels-photo-20903577.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=240&w=240' },
+            { nome: 'Arroz Branco 1kg', preco: 5.99, img: 'https://images.pexels.com/photos/38781904/pexels-photo-38781904.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=240&w=240' },
+            { nome: 'Barra de Chocolate', preco: 11.99, img: 'https://images.pexels.com/photos/32402905/pexels-photo-32402905.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=240&w=240' },
+            { nome: 'Óleo de Soja 900ml', preco: 7.99, img: 'https://images.pexels.com/photos/12284682/pexels-photo-12284682.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=240&w=240' },
+            { nome: 'Cartela de Ovos 20un', preco: 10.99, img: 'https://images.pexels.com/photos/39648252/pexels-photo-39648252.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=240&w=240' }
+        ];
+
+        window.onload = function() {
+            document.getElementById('inputDataNota').valueAsDate = new Date();
+            carregarStorage();
+            renderGondola();
+            atualizarDashboard();
+        };
+
+        function carregarStorage() {
+            const data = localStorage.getItem('anaRisorlangeCuponsData');
+            if(data) {
+                appData = JSON.parse(data);
+            }
+        }
+
+        function salvarStorage() {
+            localStorage.setItem('anaRisorlangeCuponsData', JSON.stringify(appData));
+            atualizarDashboard();
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-brandBlue', 'text-white', 'shadow-md');
+                btn.classList.add('text-slate-600');
+            });
+
+            if(tab === 'caixa') {
+                document.getElementById('tabCaixa').classList.remove('hidden');
+                document.getElementById('btnTabCaixa').classList.add('bg-brandBlue', 'text-white', 'shadow-md');
+            } else if(tab === 'registrar') {
+                document.getElementById('tabRegistrar').classList.remove('hidden');
+                document.getElementById('btnTabRegistrar').classList.add('bg-brandBlue', 'text-white', 'shadow-md');
+            } else if(tab === 'historico') {
+                document.getElementById('tabHistorico').classList.remove('hidden');
+                document.getElementById('btnTabHistorico').classList.add('bg-brandBlue', 'text-white', 'shadow-md');
+            }
+        }
+
+        function renderGondola() {
+            const container = document.getElementById('gondolaProdutos');
+            container.innerHTML = '';
+            produtosGondola.forEach(prod => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 border border-slate-200 rounded-xl p-2.5 flex flex-col justify-between hover:border-brandOrange cursor-pointer transition group";
+                card.onclick = () => addValorCaixa(prod.preco);
+                card.innerHTML = `
+                    <div class="h-20 w-full overflow-hidden rounded-lg mb-2 bg-white flex items-center justify-center">
+                        <img src="${prod.img}" alt="${prod.nome}" class="h-full w-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-700 leading-tight">${prod.nome}</p>
+                        <p class="text-xs font-black text-brandOrange mt-1">R$ ${prod.preco.toFixed(2)}</p>
+                    </div>
+                    <button class="mt-2 w-full py-1 bg-white group-hover:bg-brandOrange group-hover:text-white border border-slate-200 text-[10px] font-bold rounded-lg transition text-slate-600">+ Adicionar</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addValorCaixa(val) {
+            const input = document.getElementById('inputValorCaixa');
+            const atual = parseFloat(input.value) || 0;
+            input.value = (atual + val).toFixed(2);
+            calcularCaixaSimulador();
+        }
+
+        function zerarCaixa() {
+            document.getElementById('inputValorCaixa').value = '';
+            calcularCaixaSimulador();
+        }
+
+        function calcularCaixaSimulador() {
+            const valorDigitado = parseFloat(document.getElementById('inputValorCaixa').value) || 0;
+            const saldoReal = appData.saldoPendente;
+            document.getElementById('caixaSaldoRealTexto').innerText = `R$ ${saldoReal.toFixed(2)}`;
+
+            const totalSimulado = saldoReal + valorDigitado;
+            const cuponsGanhos = Math.floor(totalSimulado / 100);
+            const sobraResidual = totalSimulado % 100;
+            const faltaParaProximo = 100 - sobraResidual;
+            const percentual = Math.min(100, (sobraResidual / 100) * 100);
+
+            document.getElementById('caixaCuponsGanhos').innerText = `+${cuponsGanhos}`;
+            document.getElementById('caixaSobraProxima').innerText = `R$ ${sobraResidual.toFixed(2)} / R$ 100,00`;
+            document.getElementById('barProgressoCaixa').style.width = `${percentual}%`;
+
+            const tituloRes = document.getElementById('caixaTituloResultado');
+            if(valorDigitado === 0) {
+                tituloRes.innerHTML = 'Digite o valor da compra ao lado para calcular quanto falta';
+            } else if(faltaParaProximo <= 25 && faltaParaProximo > 0) {
+                tituloRes.innerHTML = `<span class="text-amber-300 font-bold"><i class="fa-solid fa-lightbulb"></i> Faltam apenas R$ ${faltaParaProximo.toFixed(2)} para garantir +1 cupom!</span> Pegue um item da gôndola abaixo.`;
+            } else {
+                tituloRes.innerHTML = `Faltam R$ ${faltaParaProximo.toFixed(2)} para liberar o próximo cupom de R$ 100,00.`;
+            }
+        }
+
+        function previewCalculoNota() {
+            const val = parseFloat(document.getElementById('inputValorNota').value) || 0;
+            const saldoSalvo = appData.saldoPendente;
+            const baseSomada = saldoSalvo + val;
+            const cupons = Math.floor(baseSomada / 100);
+            const novoSaldo = baseSomada % 100;
+
+            document.getElementById('prevValorDigitado').innerText = `R$ ${val.toFixed(2)}`;
+            document.getElementById('prevSaldoSalvo').innerText = `+ R$ ${saldoSalvo.toFixed(2)}`;
+            document.getElementById('prevBaseSomada').innerText = `R$ ${baseSomada.toFixed(2)}`;
+            document.getElementById('prevCuponsGanhos').innerText = `+${cupons}`;
+            document.getElementById('prevNovoSaldo').innerText = `R$ ${novoSaldo.toFixed(2)}`;
+        }
+
+        function carregarFotoPreview(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    fotoTempDataUrl = e.target.result;
+                    document.getElementById('boxPreviewFoto').innerHTML = `<img src="${fotoTempDataUrl}" class="max-h-40 rounded-lg object-contain">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function salvarNotaReal(e) {
+            e.preventDefault();
+            const data = document.getElementById('inputDataNota').value;
+            const coo = document.getElementById('inputCooNota').value;
+            const comprador = document.getElementById('inputCompradorNota').value;
+            const valor = parseFloat(document.getElementById('inputValorNota').value);
+            const obs = document.getElementById('inputObsNota').value;
+            const naUrna = document.querySelector('input[name="statusUrna"]:checked').value === 'urna';
+
+            const baseSomada = appData.saldoPendente + valor;
+            const cuponsGanhos = Math.floor(baseSomada / 100);
+            const novoSaldoResidual = baseSomada % 100;
+
+            appData.totalGasto += valor;
+            appData.cuponsGerados += cuponsGanhos;
+            appData.saldoPendente = novoSaldoResidual;
+
+            appData.historico.unshift({
+                id: Date.now(),
+                data: data,
+                coo: coo,
+                comprador: comprador,
+                valor: valor,
+                obs: obs,
+                cupons: cuponsGanhos,
+                naUrna: naUrna,
+                foto: fotoTempDataUrl
+            });
+
+            salvarStorage();
+            e.target.reset();
+            fotoTempDataUrl = null;
+            document.getElementById('boxPreviewFoto').innerHTML = `<p class="text-xs text-slate-400 p-4">Nenhuma foto selecionada ainda.</p>`;
+            document.getElementById('inputDataNota').valueAsDate = new Date();
+            previewCalculoNota();
+            switchTab('historico');
+        }
+
+        function toggleStatusUrna(id) {
+            const item = appData.historico.find(i => i.id === id);
+            if(item) {
+                item.naUrna = !item.naUrna;
+                salvarStorage();
+            }
+        }
+
+        function verFotoModal(id) {
+            const item = appData.historico.find(i => i.id === id);
+            if(item && item.foto) {
+                document.getElementById('containerFotoModal').innerHTML = `<img src="${item.foto}" class="max-w-full rounded-lg">`;
+                document.getElementById('modalFoto').classList.remove('hidden');
+            }
+        }
+
+        function fecharModalFoto() {
+            document.getElementById('modalFoto').classList.add('hidden');
+        }
+
+        function filtrarHistorico(tipo) {
+            filtroAtual = tipo;
+            document.querySelectorAll('#btnFiltroTodos, #btnFiltroPendente, #btnFiltroUrna').forEach(btn => {
+                btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200";
+            });
+
+            if(tipo === 'todos') document.getElementById('btnFiltroTodos').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-brandBlue text-white";
+            if(tipo === 'pendente') document.getElementById('btnFiltroPendente').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-600 text-white";
+            if(tipo === 'urna') document.getElementById('btnFiltroUrna').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white";
+
+            renderTabelaHistorico();
+        }
+
+        function atualizarDashboard() {
+            document.getElementById('dashTotalGasto').innerText = `R$ ${appData.totalGasto.toFixed(2)}`;
+            document.getElementById('dashCuponsTotal').innerText = appData.cuponsGerados;
+            document.getElementById('dashSaldoPendente').innerText = `R$ ${appData.saldoPendente.toFixed(2)}`;
+            document.getElementById('dashNotasCount').innerText = `${appData.historico.length} notas registradas`;
+
+            const naUrnaCount = appData.historico.filter(i => i.naUrna).reduce((acc, curr) => acc + curr.cupons, 0);
+            const pendentesCount = appData.cuponsGerados - naUrnaCount;
+            const faltaParaProximo = 100 - appData.saldoPendente;
+
+            document.getElementById('dashNaUrnaCount').innerHTML = `<i class="fa-solid fa-check"></i> ${naUrnaCount} Na Urna`;
+            document.getElementById('dashPendentesCount').innerHTML = `<i class="fa-solid fa-clock"></i> ${pendentesCount} Pendentes`;
+            document.getElementById('badgePendentesAba').innerText = `${pendentesCount} pend.`;
+            document.getElementById('dashFaltaTexto').innerText = `Faltam R$ ${faltaParaProximo.toFixed(2)} p/ +1 cupom`;
+
+            document.getElementById('countFiltroTodos').innerText = appData.historico.length;
+            document.getElementById('countFiltroPendente').innerText = appData.historico.filter(i => !i.naUrna).length;
+            document.getElementById('countFiltroUrna').innerText = appData.historico.filter(i => i.naUrna).length;
+
+            renderTabelaHistorico();
+            calcularCaixaSimulador();
+            previewCalculoNota();
+        }
+
+        function renderTabelaHistorico() {
+            const tbody = document.getElementById('tabelaHistoricoBody');
+            tbody.innerHTML = '';
+
+            let lista = appData.historico;
+            if(filtroAtual === 'pendente') lista = lista.filter(i => !i.naUrna);
+            if(filtroAtual === 'urna') lista = lista.filter(i => i.naUrna);
+
+            if(lista.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">Nenhuma nota cadastrada nesta visualização.</td></tr>`;
+                return;
+            }
+
+            lista.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="py-3 px-4">
+                        <p class="font-bold text-slate-700">${item.data.split('-').reverse().join('/')}</p>
+                        <p class="text-[10px] text-slate-400">COO: ${item.coo || 'N/A'}</p>
+                    </td>
+                    <td class="py-3 px-4 font-semibold text-brandBlue">${item.comprador}</td>
+                    <td class="py-3 px-4 font-bold">R$ ${item.valor.toFixed(2)}</td>
+                    <td class="py-3 px-4 text-center font-black text-brandOrange text-base">+${item.cupons}</td>
+                    <td class="py-3 px-4 text-center">
+                        ${item.foto ? `<button onclick="verFotoModal(${item.id})" class="px-2.5 py-1 bg-blue-50 text-brandBlue rounded-lg text-xs font-bold hover:bg-blue-100"><i class="fa-solid fa-image"></i> Ver Talão</button>` : `<span class="text-xs text-slate-300">Sem foto</span>`}
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        <button onclick="toggleStatusUrna(${item.id})" class="px-3 py-1 rounded-full text-xs font-bold transition ${item.naUrna ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+                            ${item.naUrna ? '<i class="fa-solid fa-check"></i> Na Urna' : '<i class="fa-solid fa-clock"></i> Pendente'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function limparTodosDados() {
+            if(confirm("Deseja apagar todo o histórico de compras e zerar os saldos?")) {
+                appData = { totalGasto: 0, cuponsGerados: 0, saldoPendente: 0, historico: [] };
+                salvarStorage();
+            }
+        }
+    </script>
+</body>
+</html>
