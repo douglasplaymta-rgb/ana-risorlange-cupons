@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --brand-navy-deep: #0B224C;
+    --brand-navy-royal: #103D8C;
+    --brand-orange: #F97316;
+    --brand-orange-hover: #EA580C;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #F8FAFC;
+    color: #0F172A;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .font-mono-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Custom receipt zigzag border and ticket punch cutouts */
+.receipt-edge-bottom {
+  background-image: linear-gradient(135deg, #fffcf2 50%, transparent 50%),
+    linear-gradient(225deg, #fffcf2 50%, transparent 50%);
+  background-position: bottom;
+  background-size: 12px 12px;
+  background-repeat: repeat-x;
+}
+
+.ticket-perforation {
+  background-image: radial-gradient(circle at 0 50%, transparent 8px, currentColor 8.5px),
+    radial-gradient(circle at 100% 50%, transparent 8px, currentColor 8.5px);
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2.4s infinite ease-in-out;
+}
